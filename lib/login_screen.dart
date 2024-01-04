@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:login_form_validation/bloc/auth_bloc.dart';
+import 'package:login_form_validation/home_screen.dart';
 import 'package:login_form_validation/widgets/gradient_button.dart';
 import 'package:login_form_validation/widgets/login_field.dart';
 import 'package:login_form_validation/widgets/social_button.dart';
@@ -26,6 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 content: Text(state.error),
               ),
             );
+          }
+          if (state is AuthSuccess) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+                (route) => false);
           }
         },
         child: SingleChildScrollView(
