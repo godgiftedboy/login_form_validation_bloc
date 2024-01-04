@@ -32,13 +32,15 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is AuthSuccess) {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
                 (route) => false);
           }
         },
         builder: (context, state) {
           if (state is AuthLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
           return SingleChildScrollView(
             child: Center(
