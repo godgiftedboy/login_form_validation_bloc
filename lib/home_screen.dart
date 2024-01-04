@@ -7,16 +7,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthBloc>().state as AuthSuccess;
     return Scaffold(
       body: Center(
-        child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthSuccess) {
-              return Text(state.uid);
-            }
-            return const Text("Validate yourself properly");
-          },
-        ),
+        child: Text(authState.uid),
       ),
     );
   }
