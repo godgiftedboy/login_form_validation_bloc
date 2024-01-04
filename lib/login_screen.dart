@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
+        //BlocListener doesnt do a job of rendering UI. It does showing snackbar, navigations, showing dialog
         listener: (context, state) {
           if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -35,58 +36,66 @@ class _LoginScreenState extends State<LoginScreen> {
                 (route) => false);
           }
         },
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                Image.asset('assets/images/signin_balls.png'),
-                const Text(
-                  "Sign In. ",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+        child: BlocBuilder<AuthBloc, AuthState>(
+          //BlocBuilder is used as BlocListener cannot render UI again.
+          builder: (context, state) {
+            if (state is AuthLoading) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  children: [
+                    Image.asset('assets/images/signin_balls.png'),
+                    const Text(
+                      "Sign In. ",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const SocialButton(
+                      iconPath: 'assets/svgs/f_logo.svg',
+                      label: 'Continue with Facebook',
+                      horizontalPadding: 80,
+                    ),
+                    const SizedBox(height: 20),
+                    const SocialButton(
+                      iconPath: 'assets/svgs/g_logo.svg',
+                      label: 'Continue with Gmail',
+                      horizontalPadding: 90,
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      'or',
+                      style: TextStyle(fontSize: 17, color: Colors.white),
+                    ),
+                    const SizedBox(height: 15),
+                    LoginField(
+                      hintText: 'Email',
+                      controller: emailController,
+                    ),
+                    const SizedBox(height: 15),
+                    LoginField(
+                      hintText: 'Password',
+                      controller: passwordController,
+                    ),
+                    const SizedBox(height: 15),
+                    GradientButton(
+                      onPressed: () {
+                        context.read<AuthBloc>().add(AuthLoginRequested(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                            ));
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                const SocialButton(
-                  iconPath: 'assets/svgs/f_logo.svg',
-                  label: 'Continue with Facebook',
-                  horizontalPadding: 80,
-                ),
-                const SizedBox(height: 20),
-                const SocialButton(
-                  iconPath: 'assets/svgs/g_logo.svg',
-                  label: 'Continue with Gmail',
-                  horizontalPadding: 90,
-                ),
-                const SizedBox(height: 15),
-                const Text(
-                  'or',
-                  style: TextStyle(fontSize: 17, color: Colors.white),
-                ),
-                const SizedBox(height: 15),
-                LoginField(
-                  hintText: 'Email',
-                  controller: emailController,
-                ),
-                const SizedBox(height: 15),
-                LoginField(
-                  hintText: 'Password',
-                  controller: passwordController,
-                ),
-                const SizedBox(height: 15),
-                GradientButton(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(AuthLoginRequested(
-                          email: emailController.text.trim(),
-                          password: passwordController.text.trim(),
-                        ));
-                  },
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
