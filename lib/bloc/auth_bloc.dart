@@ -6,38 +6,53 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitial()) {
-    on<AuthLoginRequested>((event, emit) async {
-      emit(AuthLoading());
-      try {
-        final email = event.email;
-        final password = event.password;
-        String p =
-            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    on<AuthLoginRequested>(_onAuthLoginRequested);
+    on<AuthLogoutRequested>(_onAuthLogoutRequested);
+  }
+  @override
+  void onChange(Change<AuthState> change) {
+    super.onChange(change);
+    print("AuthBloc - Change - $change");
+  }
 
-        if (!RegExp(p).hasMatch(email)) {
-          emit(AuthFailure('Email is not valid'));
-          return;
-        }
-        if (password.length < 6) {
-          emit(AuthFailure('Password cannot be less than 6 characters'));
-          return;
-        }
+  @override
+  void onTransition(Transition<AuthEvent, AuthState> transition) {
+    super.onTransition(transition);
+    print("AuthBloc - Transition  - $transition ");
+  }
 
-        await Future.delayed(const Duration(seconds: 1), () {
-          return emit(AuthSuccess(uid: '$email-$password'));
-        });
-      } catch (e) {
-        return emit(AuthFailure(e.toString()));
+  void _onAuthLoginRequested(
+      AuthLoginRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final email = event.email;
+      final password = event.password;
+      String p =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+      if (!RegExp(p).hasMatch(email)) {
+        return emit(AuthFailure('Email is not valid'));
       }
-    });
-    on<AuthLogoutRequested>((event, emit) async {
-      try {
-        await Future.delayed(const Duration(seconds: 1), () {
-          return emit(AuthInitial());
-        });
-      } catch (e) {
-        return emit(AuthFailure(e.toString()));
+      if (password.length < 6) {
+        return emit(AuthFailure('Password cannot be less than 6 characters'));
       }
-    });
+
+      await Future.delayed(const Duration(seconds: 1), () {
+        return emit(AuthSuccess(uid: '$email-$password'));
+      });
+    } catch (e) {
+      return emit(AuthFailure(e.toString()));
+    }
+  }
+
+  void _onAuthLogoutRequested(
+      AuthLogoutRequested event, Emitter<AuthState> emit) async {
+    try {
+      await Future.delayed(const Duration(seconds: 1), () {
+        return emit(AuthInitial());
+      });
+    } catch (e) {
+      return emit(AuthFailure(e.toString()));
+    }
   }
 }
