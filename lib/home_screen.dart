@@ -25,7 +25,6 @@ class HomeScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-
           return Center(
             child: Column(
               children: [
