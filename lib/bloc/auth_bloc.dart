@@ -17,6 +17,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   @override
   void onTransition(Transition<AuthEvent, AuthState> transition) {
+    //this method is only provided by the bloc(not on Cubit)
+    //because Cubit doesnot work on events
     super.onTransition(transition);
     print("AuthBloc - Transition  - $transition ");
   }
