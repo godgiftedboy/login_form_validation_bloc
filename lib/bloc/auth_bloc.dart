@@ -9,19 +9,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoginRequested>(_onAuthLoginRequested);
     on<AuthLogoutRequested>(_onAuthLogoutRequested);
   }
-  @override
-  void onChange(Change<AuthState> change) {
-    super.onChange(change);
-    print("AuthBloc - Change - $change");
-  }
+  // @override
+  // void onChange(Change<AuthState> change) {
+  //   super.onChange(change);
+  //   print("AuthBloc - Change - $change");
+  // }
 
-  @override
-  void onTransition(Transition<AuthEvent, AuthState> transition) {
-    //this method is only provided by the bloc(not on Cubit)
-    //because Cubit doesnot work on events
-    super.onTransition(transition);
-    print("AuthBloc - Transition  - $transition ");
-  }
+  // @override
+  // void onTransition(Transition<AuthEvent, AuthState> transition) {
+  //   //this method is only provided by the bloc(not on Cubit)
+  //   //because Cubit doesnot work on events
+  //   super.onTransition(transition);
+  //   print("AuthBloc - Transition  - $transition ");
+  // }
 
   void _onAuthLoginRequested(
       AuthLoginRequested event, Emitter<AuthState> emit) async {

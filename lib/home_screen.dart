@@ -32,6 +32,11 @@ class HomeScreen extends StatelessWidget {
                 GradientButton(
                   onPressed: () {
                     context.read<AuthBloc>().add(AuthLogoutRequested());
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (route) => false);
                   },
                   btnName: "Sign Out",
                 ),
